@@ -18,6 +18,12 @@ Berikut adalah dokumentasi operasional perangkat:
 
 ---
 
+### Foto PCB
+![Hasil Cetak PCB](ntp2.jpeg)
+*Gambar 2: PCB 7 segment 4 inch dan 5 inch.*
+
+---
+
 ## 🌟 Fitur Utama
 * **Koneksi LAN (Ethernet)**: Menggunakan modul W5500 untuk konektivitas jaringan yang sangat stabil.
 * **Akurasi Tinggi**: Sinkronisasi otomatis ke server NTP (`id.pool.ntp.org`).
