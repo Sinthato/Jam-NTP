@@ -75,23 +75,82 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 EthernetUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "id.pool.ntp.org", 25200); // Offset WIB (+7)
 
-void setup() {
-  pinMode(D1, OUTPUT); // Data 4094
-  pinMode(D3, OUTPUT); // Strobe 4094
-  pinMode(D4, OUTPUT); // Clock 4094
+#include <SPI.h>
+#include <Ethernet2.h>
+#include <EthernetUdp2.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
-  if (Ethernet.begin(mac) == 0) {
-    while (1); // Gagal koneksi LAN
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 32
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+// ======= Ubah nomor unit 1-30 =======
+#define MY_UNIT 2
+// =====================================
+
+// MAC unik: ubah byte terakhir sesuai unit
+byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0x00, MY_UNIT};
+
+// IP statis sesuai subnet Raspberry (192.168.0.x)
+IPAddress ip(192,168,10,100 + MY_UNIT);  // Unit 1 → 192.168.0.101
+
+// UDP settings
+unsigned int localPort = 8888;
+EthernetUDP Udp;
+char packetBuffer[32];
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  // OLED
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)){
+    Serial.println("Gagal deteksi OLED!");
+    for(;;);
   }
-  timeClient.begin();
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Init...");
+  display.display();
+
+  // Ethernet2
+  Ethernet.init(D4);  // CS W5500 Lite di D4
+  Ethernet.begin(mac, ip); // IP statis
+  delay(1000);
+
+  Serial.print("Unit ");
+  Serial.print(MY_UNIT);
+  Serial.print(" Wemos IP: ");
+  Serial.println(Ethernet.localIP());
+
+  // Mulai UDP
+  Udp.begin(localPort);
+  Serial.print("UDP listening on port ");
+  Serial.println(localPort);
+
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println("Ready");
+  display.display();
 }
 
 void loop() {
-  timeClient.update();
-  String t = timeClient.getFormattedTime(); // Format HH:MM:SS
-  
-  // Update data ke display melalui IC 4094
-  updateDisplay(t);
-  
-  delay(1000);
+  int packetSize = Udp.parsePacket();
+  if(packetSize) {
+    int len = Udp.read(packetBuffer, 32);
+    if(len > 0) packetBuffer[len] = 0; // null terminate
+
+    Serial.print("Received: ");
+    Serial.println(packetBuffer);
+
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.println(packetBuffer); // hh:mm:ss
+    display.display();
+  }
 }
+
