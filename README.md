@@ -13,7 +13,7 @@ Berikut adalah dokumentasi operasional perangkat:
 *Klik gambar di atas untuk memutar video demo.*
 
 ### Foto Perangkat
-![Tampilan Jam NTP 6 Digit](ntp1.jpg)
+![Tampilan Jam NTP 6 Digit](ntp1.jpeg)
 *Gambar 1: Unit display jam 6 digit industrial.*
 
 ---
