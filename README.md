@@ -9,7 +9,7 @@ Proyek jam digital berbasis mikrokontroler yang mengambil data waktu dari server
 Berikut adalah dokumentasi operasional perangkat:
 
 ### Video Operasional
-[![Demo Jam NTP](https://img.youtube.com/vi/ID_VIDEO_ANDA/0.jpg)](https://www.youtube.com/watch?v=ID_VIDEO_ANDA)
+[![Demo Jam NTP](https://img.youtube.com/vi/_R5s3KsJ4hs/0.jpg)](https://www.youtube.com/watch?v=_R5s3KsJ4hs)
 *Klik gambar di atas untuk memutar video demo.*
 
 ### Foto Perangkat
